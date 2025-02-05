@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cn.cravatar.com/favicon/api/index.php?url=wptea.com">
+    <link rel="preconnect" href="https://cn.windfonts.com" />
+    <link rel="stylesheet" type="text/css" crossOrigin='anonymous' href="https://cn.windfonts.com/wenfeng/fonts/albbpht/regular/web/index.css" />
+    <!-- 此中文网页字体由文风字体（Windfonts）免费提供，您可以自由引用，请务必保留此授权许可标注 https://wenfeng.org/license -->
+    <title>文派茶馆 WPTEA.com - RSS阅读器</title>
+    <style>
+        :root {
+            --bg-color: #dcdfe6;
+            --text-color: #505050;
+            --card-bg: #fff;
+            --border-color: #ddd;
+            --header-bg: #fff;
+            --button-bg: #3858e9;
+            --button-text: #fff;
+        }
+        /* 暗色模式下切换logo */
+        [data-theme="dark"] .custom-logo {
+            content: url("https://wptea.com/wp-content/uploads/2023/10/wptea-logo-w.png");
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+            --header-bg: #2d2d2d;
+            --button-bg: #3858e9;
+            --button-text: #fff;
+        }
+        [data-theme="dark"] header {
+           box-shadow: 0px 3px 20px 0px rgb(0 0 0 / 20%);
+          }
+        [data-theme="dark"] .rss-item {
+             box-shadow: 0px 3px 20px 0px rgb(0 0 0 / 20%);
+            }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media (max-width:769px) {
+          .header-top {
+              display: block!important;
+          }
+          h1 {
+              display: none;
+          }
+          .header-logo {
+              display: block!important;
+              zoom: 80%;
+              padding: 5% 0px;
+              text-align: center;
+          }
+          .header-controls {
+              display: block!important;
+              zoom: 80%;
+              text-align: center;
+        }
+        button {
+    margin: 1%;
+}
+        .rss-item h2 {
+    display: flow!important;
+    zoom: 80%;
+}
+.description {
+  zoom: 80%;
+}
+.rss-item {
+    padding: 10%!important;
+}
+.pagination {
+    display: flow!important;
+    zoom: 70%;
+    text-align: center;
+}
+.pagination button {
+    margin: 1%;
+}
+
+
+        }
+        html {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body, div, span, applet, object, iframe, button, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+            font-family: 'wenfeng-albbpht', -apple-system, "Noto Sans", "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+            font-weight: regular;
+        }
+
+        body {
+            font-family:'wenfeng-albbpht', -apple-system, "Noto Sans", "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+            font-weight: regular;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--header-bg);
+            padding: 5%;
+            margin-top: 40px;
+            margin-bottom: 60px;
+            border-radius: 20px;
+            box-shadow: 0px 3px 20px 0px rgb(103 151 255 / 20%);
+        }
+        .header-logo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+          font-size: 16px;
+          padding: 3px 15px;
+          border-radius: 5px;
+          margin-left: 10px;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar {
+            width: 100%;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            padding: 5px 10px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        button#rss-api a {
+        color: var(--button-text);
+        text-decoration: unset;
+}
+
+        .loading {
+            text-align: center;
+            padding: 0 0 30px 0;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .rss-item {
+            background: var(--card-bg);
+            padding: 5%;
+            margin-bottom: 40px;
+            border-radius: 20px;
+            box-shadow: 0px 3px 20px 0px rgb(103 151 255 / 20%);
+        }
+
+        .rss-item h2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.234em;
+        }
+
+        .rss-item h2 a {
+            color: var(--text-color);
+            text-decoration: none;
+            flex-grow: 1;
+            font-weight: 400;
+        }
+
+        .rss-item h2 img {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        .rss-item h2 a:hover {
+            text-decoration: underline;
+            color: var(--button-bg);
+        }
+
+        .group-tag {
+            font-size: 12px;
+            font-weight: 400;
+            background: var(--button-bg);
+            color: var(--button-text);
+            padding: 3px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .description {
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 2;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.6;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 80px;
+            margin-bottom: 60px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .pagination button:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+    .footer {
+    width: 100%;
+    padding: 30px 10%;
+    position: relative;
+    bottom: 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.9em;
+    zoom: 80%;
+}
+
+/* 确保页脚始终在底部 */
+body {
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+              <div class="header-logo">
+                  <a href="./" class="custom-logo-link" rel="home" aria-current="page">
+                      <img class="custom-logo"
+                           src="https://wptea.com/wp-content/uploads/2023/10/wptea-logo.png"
+                           alt="文派茶馆 WP TEA"
+                           width="180"
+                           height="36">
+                  </a>
+                  <h1>RSS 新闻源</h1>
+              </div>
+
+                <div class="header-controls">
+                    <button id="theme-toggle">切换主题</button>
+                    <button id="refresh-button">刷新</button>
+                    <button id="download-button">下载内容</button>
+                    <button id="export-feeds">导出订阅源</button>
+                    <button id="rss-api"><a href="https://wptea.com/rss2json-api/" target="_blank" rel="noopener noreferrer">API 文档</a></button>
+                </div>
+            </div>
+
+    <!-- 注册 Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('https://wptea.com/wp-content/plugins/rss2json-api/assets/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registered successfully');
+            })
+            .catch(err => console.error('ServiceWorker registration failed:', err));
+    }
+    </script>
+
+
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="搜索...">
+            </div>
+        </header>
+
+    <div id="loading-indicator" class="loading" style="display: none;">努力加载中，稍等...</div>
+
+        <main>
+            <div id="rss-container"></div>
+            <div id="pagination" class="pagination"></div>
+        </main>
+    </div>
+
+    <script>
+        class RSSManager {
+            constructor() {
+                this.rssGroups = {
+                    tech: {
+                        name: '新闻',
+                        feeds: [
+                            'https://wptea.com/feed',
+                            'https://wpicp.com/feed'
+                        ]
+                    },
+                    blog: {
+                        name: '博客',
+                        feeds: [
+                            'https://wpsdk.com/feed',
+                            'https://wphandbook.com/feed'
+                        ]
+                    },
+                    news: {
+                        name: '平台',
+                        feeds: [
+                            'https://one.weixiaoduo.com/feed',
+                            'https://wpsaas.com/feed'
+                        ]
+                    },
+                    open: {
+                        name: '开源',
+                        feeds: [
+                            'https://wenpai.org/news/feed',
+                            'https://wenfeng.org/news/feed'
+                        ]
+                    },
+                    product: {
+                        name: '产品',
+                        feeds: [
+                            'https://wapuu.com/feed',
+                            'https://wpbridge.com/feed',
+                            'https://wpavatar.com/feed',
+                            'https://wpcy.com/feed'
+                        ]
+                    },
+                    news: {
+                        name: '生态',
+                        feeds: [
+                            'https://windfonts.com/news/feed',
+                            'https://cravatar.com/news/feed',
+                            'https://admincdn.com/news/feed'
+                        ]
+                    }
+                };
+
+
+                            this.allItems = [];
+                            this.currentItems = [];
+                            this.itemsPerPage = 10;
+                            this.currentPage = 1;
+                            this.theme = localStorage.getItem('theme') || 'light';
+                            this.cacheExpiry = 30 * 60 * 1000; // 30分钟缓存过期
+                            this.refreshInterval = 30 * 60 * 1000; // 30分钟刷新间隔
+
+                            this.init();
+                        }
+
+                        async init() {
+                            document.documentElement.setAttribute('data-theme', this.theme);
+                            this.setupEventListeners();
+                            await this.loadItems();
+
+                            // 设置定时刷新
+                            setInterval(() => {
+                                this.loadItems();
+                            }, this.refreshInterval);
+                        }
+
+                        async loadItems() {
+                            const loadingIndicator = document.getElementById('loading-indicator');
+                            loadingIndicator.style.display = 'block';
+
+                            try {
+                                // 添加一个小延时，确保加载提示能显示出来
+                                await new Promise(resolve => setTimeout(resolve, 800));
+        
+                                // 检查缓存
+                                const cachedData = localStorage.getItem('rssCache');
+                                if (cachedData) {
+                                    const {timestamp, items} = JSON.parse(cachedData);
+                                    if (Date.now() - timestamp < this.cacheExpiry) {
+                                        this.allItems = items;
+                                        this.filterAndDisplayItems();
+                                        loadingIndicator.style.display = 'none';
+                                        return;
+                                    }
+                                }
+
+                                // 获取新数据
+                                this.allItems = [];
+                                for (const [groupKey, group] of Object.entries(this.rssGroups)) {
+                                    for (const feed of group.feeds) {
+                                        const items = await this.fetchFeed(feed);
+                                        items.forEach(item => {
+                                            item.group = groupKey;
+                                            item.groupName = group.name;
+                                            item.favicon = `https://cn.cravatar.com/favicon/api/index.php?url=${new URL(feed).hostname}`;
+                                            item.sourceDomain = new URL(feed).hostname;
+                                        });
+                                        this.allItems.push(...items);
+                                    }
+                                }
+
+                                // 排序并保存到缓存
+                                this.allItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+                                localStorage.setItem('rssCache', JSON.stringify({
+                                    timestamp: Date.now(),
+                                    items: this.allItems
+                                }));
+
+                                this.filterAndDisplayItems();
+                            } catch (error) {
+                                console.error('Error loading items:', error);
+                            } finally {
+                                loadingIndicator.style.display = 'none';
+                            }
+                        }
+
+                        async fetchFeed(url) {
+                            try {
+                                const cacheKey = `feed_${url}`;
+                                const cachedData = localStorage.getItem(cacheKey);
+
+                                if (cachedData) {
+                                    const {timestamp, data} = JSON.parse(cachedData);
+                                    if (Date.now() - timestamp < this.cacheExpiry) {
+                                        return data;
+                                    }
+                                }
+
+                                const response = await fetch(`https://wptea.com/wp-json/rss2json/v1/parse?url=${encodeURIComponent(url)}`);
+                                const data = await response.json();
+
+                                const items = data.items.map(item => ({
+                                    title: item.title,
+                                    link: item.link,
+                                    description: item.description,
+                                    date: item.date,
+                                    source: url
+                                }));
+
+                                // 缓存单个源的数据
+                                localStorage.setItem(cacheKey, JSON.stringify({
+                                    timestamp: Date.now(),
+                                    data: items
+                                }));
+
+                                return items;
+                            } catch (error) {
+                                console.error(`Error fetching feed ${url}:`, error);
+                                return [];
+                            }
+                        }
+
+            filterAndDisplayItems(searchTerm = '') {
+                const searchInput = document.getElementById('search-input');
+                searchTerm = searchTerm || searchInput.value.toLowerCase();
+
+                this.currentItems = this.allItems.filter(item =>
+                    item.title.toLowerCase().includes(searchTerm) ||
+                    item.description.toLowerCase().includes(searchTerm)
+                );
+
+                this.displayItems();
+                this.updatePagination();
+            }
+
+            displayItems() {
+                const container = document.getElementById('rss-container');
+                const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+                const endIndex = startIndex + this.itemsPerPage;
+                const itemsToShow = this.currentItems.slice(startIndex, endIndex);
+
+                container.innerHTML = itemsToShow.map(item => `
+                    <div class="rss-item">
+                        <h2>
+                            <img src="${item.favicon}" alt="${item.sourceDomain}">
+                            <a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+                            <span class="group-tag">${item.groupName}</span>
+                        </h2>
+                        <div class="description">${item.description}</div>
+                        <div class="meta">${new Date(item.date).toLocaleString()} - 来源: ${item.sourceDomain}</div>
+                    </div>
+                `).join('');
+            }
+
+            updatePagination() {
+                const pagination = document.getElementById('pagination');
+                const totalPages = Math.ceil(this.currentItems.length / this.itemsPerPage);
+                pagination.innerHTML = '';
+
+                // 添加"上一页"按钮
+                const prevButton = document.createElement('button');
+                prevButton.textContent = '上一页';
+                prevButton.disabled = this.currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    if (this.currentPage > 1) {
+                        this.currentPage--;
+                        this.displayItems();
+                        this.updatePagination();
+                    }
+                });
+                pagination.appendChild(prevButton);
+
+                // 页码按钮逻辑
+                const maxVisibleButtons = 5; // 最多显示的页码按钮数
+                let startPage = Math.max(1, this.currentPage - Math.floor(maxVisibleButtons / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+
+                // 调整起始页，确保显示足够的按钮
+                if (endPage - startPage + 1 < maxVisibleButtons) {
+                    startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+                }
+
+                // 添加第一页和省略号
+                if (startPage > 1) {
+                    const firstButton = document.createElement('button');
+                    firstButton.textContent = '1';
+                    firstButton.addEventListener('click', () => {
+                        this.currentPage = 1;
+                        this.displayItems();
+                        this.updatePagination();
+                    });
+                    pagination.appendChild(firstButton);
+
+                    if (startPage > 2) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.margin = '0 8px';
+                        pagination.appendChild(ellipsis);
+                    }
+                }
+
+                // 添加页码按钮
+                for (let i = startPage; i <= endPage; i++) {
+                    const button = document.createElement('button');
+                    button.textContent = i;
+                    button.classList.toggle('active', i === this.currentPage);
+                    button.addEventListener('click', () => {
+                        this.currentPage = i;
+                        this.displayItems();
+                        this.updatePagination();
+                    });
+                    pagination.appendChild(button);
+                }
+
+                // 添加最后一页和省略号
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.margin = '0 8px';
+                        pagination.appendChild(ellipsis);
+                    }
+
+                    const lastButton = document.createElement('button');
+                    lastButton.textContent = totalPages;
+                    lastButton.addEventListener('click', () => {
+                        this.currentPage = totalPages;
+                        this.displayItems();
+                        this.updatePagination();
+                    });
+                    pagination.appendChild(lastButton);
+                }
+
+                // 添加"下一页"按钮
+                const nextButton = document.createElement('button');
+                nextButton.textContent = '下一页';
+                nextButton.disabled = this.currentPage === totalPages;
+                nextButton.addEventListener('click', () => {
+                    if (this.currentPage < totalPages) {
+                        this.currentPage++;
+                        this.displayItems();
+                        this.updatePagination();
+                    }
+                });
+                pagination.appendChild(nextButton);
+            }
+
+            setupEventListeners() {
+                const themeToggle = document.getElementById('theme-toggle');
+                themeToggle.addEventListener('click', () => {
+                    this.theme = this.theme === 'light' ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', this.theme);
+                    localStorage.setItem('theme', this.theme);
+                });
+
+                const refreshButton = document.getElementById('refresh-button');
+                refreshButton.addEventListener('click', () => this.loadItems());
+
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', () => this.filterAndDisplayItems());
+
+                const exportFeeds = document.getElementById('export-feeds');
+                exportFeeds.addEventListener('click', () => this.exportFeeds());
+
+                const downloadButton = document.getElementById('download-button');
+                downloadButton.addEventListener('click', () => this.downloadContent());
+            }
+
+            exportFeeds() {
+                const feedsData = {
+                    version: "1.0",
+                    feeds: Object.entries(this.rssGroups).map(([key, group]) => ({
+                        group: key,
+                        groupName: group.name,
+                        urls: group.feeds
+                    }))
+                };
+
+                const blob = new Blob([JSON.stringify(feedsData, null, 2)], {
+                    type: 'application/json'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'rss_feeds.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            downloadContent() {
+                const contentData = {
+                    version: "1.0",
+                    exportDate: new Date().toISOString(),
+                    items: this.currentItems.map(item => ({
+                        title: item.title,
+                        link: item.link,
+                        description: item.description,
+                        pubDate: item.date,
+                        source: item.source,
+                        group: item.group,
+                        groupName: item.groupName,
+                        sourceDomain: item.sourceDomain
+                    }))
+                };
+
+                const blob = new Blob([JSON.stringify(contentData, null, 2)], {
+                    type: 'application/json'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `rss_content_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new RSSManager());
+    </script>
+
+    <footer class="footer">
+    <div class="footer-content">
+        <p>Copyright © 2025 WPTEA.com, All Rights Reserved. 文派 （广州） 科技有限公司，版权所有。</p>
+    </div>
+</footer>
+</body>
+</html>
