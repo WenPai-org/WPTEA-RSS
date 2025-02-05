@@ -14,6 +14,8 @@ WPTEA RSS 是一个基于 HTML 的单文件 RSS 阅读器，能够聚合多个 R
 - **搜索功能**：可以通过关键词搜索内容。
 - **导出功能**：支持导出订阅源和当前内容为 JSON 文件。
 
+<a href="#"><img height="auto" src="https://wptea.com/wp-content/uploads/2024/12/2024-12-16-133254.jpg"></a>
+
 ## 使用说明
 
 ### 1. 打开页面
